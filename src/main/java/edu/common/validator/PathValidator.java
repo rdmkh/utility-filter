@@ -8,6 +8,8 @@ public class PathValidator implements IParameterValidator {
 
     private static final String FILE_REGEX = "^.+\\.txt$";
 
+    private static final Pattern PATTERN_FILE = Pattern.compile(FILE_REGEX);
+
     @Override
     public void validate(String name, String value) throws ParameterException {
         if (value == null || value.isBlank()) {
@@ -20,6 +22,6 @@ public class PathValidator implements IParameterValidator {
     }
 
     private boolean isValidPath(String value) {
-        return Pattern.compile(FILE_REGEX).matcher(value).matches();
+        return PATTERN_FILE.matcher(value).matches();
     }
 }
