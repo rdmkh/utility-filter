@@ -10,9 +10,12 @@ import edu.common.loader.ResultFileLoader;
 import edu.common.parser.Parser;
 import edu.common.parser.ParserCli;
 import edu.common.statistics.StatisticsType;
+import edu.common.type.DataType;
 import edu.common.validator.DataTypeValidator;
 import edu.common.view.ViewWriter;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AppRunner {
@@ -34,19 +37,15 @@ public class AppRunner {
             Handler handler = new HandlerFile(parser.getFilePaths(), view, validator);
 
             Optional<StatisticsType> statsType = parser.getStatisticsType();
-            loader.load(handler.processFiles(statsType.orElse(null)));
+            Map<DataType, List<String>> processData = handler.processFiles(statsType.orElse(null));
+            if (!processData.isEmpty()) loader.load(processData);
 
         } catch (ProcessingException e) {
             System.err.println("Ошибка обработки: " + e.getMessage());
         } catch (ParameterException e) {
             System.err.println("Ошибка в параметрах командной строки: " + e.getMessage());
-
-            JCommander jCommander = e.getJCommander();
-            jCommander.setProgramName("java -jar util.jar");
-            jCommander.usage();
-
         } catch (Exception e) {
-            System.err.println("Непредвиденная ошибка: ");
+            System.err.println("Непредвиденная ошибка: " + e.getMessage());
         }
     }
 
