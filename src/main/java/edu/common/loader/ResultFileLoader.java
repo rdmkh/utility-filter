@@ -12,12 +12,16 @@ import java.util.Map;
 
 public class ResultFileLoader implements Loader {
 
+    private static final String IF_EMPTY_DATA_MESSAGE =
+            "Нет данных для сохранения результатов. Заполните исходные файлы данными.";
+
     private final View view;
     private final String filePrefix;
     private final String outputDirectory;
     private final boolean appendMode;
 
-    public ResultFileLoader(View view, String filePrefix, String outputDirectory, boolean appendMode) {
+    public ResultFileLoader(
+            View view, String filePrefix, String outputDirectory, boolean appendMode) {
         this.view = view;
         this.filePrefix = filePrefix;
         this.outputDirectory = outputDirectory;
@@ -26,7 +30,9 @@ public class ResultFileLoader implements Loader {
 
     @Override
     public void load(Map<DataType, List<String>> data) {
-        if (data.isEmpty()) {
+
+        if (isEmptyData(data)) {
+            view.printMessage(IF_EMPTY_DATA_MESSAGE);
             return;
         }
 
@@ -39,11 +45,18 @@ public class ResultFileLoader implements Loader {
                 }
             }
 
-            view.printMessage("Данные успешно записаны!");
-
         } catch (IOException e) {
             throw new ProcessingException("Ошибка записи результатов", e);
         }
+    }
+
+    private boolean isEmptyData(Map<DataType, List<String>> data) {
+        for (List<String> list : data.values()) {
+            if (!list.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createOutputDirectory() throws IOException {
@@ -64,5 +77,10 @@ public class ResultFileLoader implements Loader {
                 StandardOpenOption.CREATE,
                 StandardOpenOption.WRITE,
                 option);
+
+        String message = "Имя файла:[%s]\nДиректория: [%s]\n";
+        String dir = outputDirectory.isEmpty() ? "Текущая" : filePath.toString();
+
+        view.printfMessage("Данные успешно записаны:\n" + message, fileName, dir);
     }
 }
