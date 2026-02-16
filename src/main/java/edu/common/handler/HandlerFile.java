@@ -18,7 +18,9 @@ import java.util.*;
 
 public class HandlerFile implements Handler {
 
-    private static final String FILE_NOT_EXIST_MESSAGE = "Файл '%s' не существует.";
+    private static final String FILE_NOT_EXIST_MESSAGE = "Файл '%s' не существует. Удалено.";
+    private static final String IF_FILE_PATHS_IS_EMPTY_MESSAGE =
+            "Отсутствуют файлы для дальнейшей обработки содержимого. Повторите ввод существующих файлов.";
 
     private final List<Path> filePaths;
     private final View view;
@@ -36,7 +38,7 @@ public class HandlerFile implements Handler {
         removeNonExistentFiles();
 
         if (filePaths.isEmpty()) {
-            view.printMessage("Повторите ввод существующих файлов!");
+            view.printMessage(IF_FILE_PATHS_IS_EMPTY_MESSAGE);
             return Collections.emptyMap();
         }
 
