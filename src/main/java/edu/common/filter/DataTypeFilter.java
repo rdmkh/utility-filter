@@ -13,19 +13,20 @@ public class DataTypeFilter {
         this.validator = validator;
 
         dataByType = new EnumMap<>(DataType.class);
-        initDataByType();
     }
 
-    private void initDataByType() {
-        for (DataType type : DataType.values()) {
+    private void addDataByType(DataType type, String value) {
+        if (!dataByType.containsKey(type)) {
             dataByType.put(type, new ArrayList<>());
         }
+
+        dataByType.get(type).add(value);
     }
 
     public void filter(String line) {
-        line = line.trim();
-        DataType type = validator.detectType(line);
-        dataByType.get(type).add(line);
+        String trimmed = line.trim();
+        DataType type = validator.detectType(trimmed);
+        addDataByType(type, line);
     }
 
     public Map<DataType, List<String>> getFilteredData() {
