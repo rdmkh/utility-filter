@@ -2,7 +2,6 @@ package edu.common.statistics;
 
 import edu.common.type.DataType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,25 +24,19 @@ public abstract class AbstractStatistics implements Statistics {
             switch (entry.getKey()) {
                 case INTEGER -> values.forEach(intStats::add);
                 case STRING -> values.forEach(stringStats::add);
-                case FLOAT -> prepareFloatFormat(values).forEach(floatStats::add);
+                case FLOAT -> values.forEach(value -> floatStats.add(stripFloatSuffix(value)));
             }
         }
 
         return formatStatistics(intStats, floatStats, stringStats);
     }
 
-    private List<String> prepareFloatFormat(List<String> data) {
-        List<String> newData = new ArrayList<>();
-        for (String datum : data) {
-            char ch = datum.charAt(datum.length() - 1);
-
-            switch (ch) {
-                case 'f', 'F', 'd', 'D' -> newData.add(datum.substring(0, datum.length() - 1));
-                default -> newData.add(datum);
-            }
-        }
-
-        return newData;
+    private String stripFloatSuffix(String datum) {
+        char lastChar = datum.charAt(datum.length() - 1);
+        return switch (lastChar) {
+            case 'f', 'F', 'd', 'D' -> datum.substring(0, datum.length() - 1);
+            default -> datum;
+        };
     }
 
     protected abstract String formatStatistics(IntegersStatistics intStats,
