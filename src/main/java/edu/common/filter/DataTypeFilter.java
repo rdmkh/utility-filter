@@ -26,7 +26,7 @@ public class DataTypeFilter {
     public void filter(String line) {
         String trimmed = line.trim();
         DataType type = validator.detectType(trimmed);
-        addDataByType(type, line);
+        addDataByType(type, trimmed);
     }
 
     public Map<DataType, List<String>> getFilteredData() {
