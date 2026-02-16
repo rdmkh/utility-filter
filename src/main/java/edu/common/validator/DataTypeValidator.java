@@ -2,10 +2,15 @@ package edu.common.validator;
 
 import edu.common.type.DataType;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.regex.Pattern;
 
 public class DataTypeValidator {
+
+    private static final String REGEX_FLOATS = "^[+-]?\\d*(\\.\\d+)?([eE][+-]?\\d+)?[fF]?[dD]?$";
+    private static final String REGEX_INTEGERS = "^-?\\d+$";
+
+    private static final Pattern PATTERN_FLOATS = Pattern.compile(REGEX_FLOATS);
+    private static final Pattern PATTERN_INTEGERS = Pattern.compile(REGEX_INTEGERS);
 
     public DataType detectType(String value) {
         if (isInteger(value)) {
@@ -22,12 +27,7 @@ public class DataTypeValidator {
             return false;
         }
 
-        try {
-            new BigDecimal(data);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        return PATTERN_FLOATS.matcher(data).matches();
     }
 
     public boolean isInteger(String data) {
@@ -35,11 +35,6 @@ public class DataTypeValidator {
             return false;
         }
 
-        try {
-            new BigInteger(data);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        return PATTERN_INTEGERS.matcher(data).matches();
     }
 }
