@@ -13,28 +13,20 @@ public class DataTypeValidator {
     private static final Pattern PATTERN_INTEGERS = Pattern.compile(REGEX_INTEGERS);
 
     public DataType detectType(String value) {
-        if (isInteger(value)) {
+        if (validateValue(PATTERN_INTEGERS, value)) {
             return DataType.INTEGER;
-        } else if (isFloat(value)) {
+        } else if (validateValue(PATTERN_FLOATS, value)) {
             return DataType.FLOAT;
         } else {
             return DataType.STRING;
         }
     }
 
-    public boolean isFloat(String data) {
+    private boolean validateValue(Pattern pattern, String data) {
         if (data == null || data.isEmpty()) {
             return false;
         }
 
-        return PATTERN_FLOATS.matcher(data).matches();
-    }
-
-    public boolean isInteger(String data) {
-        if (data == null || data.isEmpty()) {
-            return false;
-        }
-
-        return PATTERN_INTEGERS.matcher(data).matches();
+        return pattern.matcher(data).matches();
     }
 }
